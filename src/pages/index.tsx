@@ -14,11 +14,12 @@ import { chatGptApiKey } from '@/constants';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
 export default function Home() {
-  // const [isMessageHidden, setIsMessage] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [outgoingMessage, setOutgoingMessage] = useState(
-    `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`
-  );
+  const [outgoingMessage, setOutgoingMessage] = useState<Message>({
+    text: `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`,
+    user: { isHuman: true, name: 'Newcomer' },
+    isHidden: true,
+  });
 
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -36,7 +37,7 @@ export default function Home() {
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: outgoingMessage }],
+            messages: [{ role: 'user', content: outgoingMessage.text }],
           }),
         });
 
@@ -44,7 +45,13 @@ export default function Home() {
 
         setMessages((messages) => [
           ...messages,
-          { text: outgoingMessage, user: { isHuman: true, name: 'Newcomer' } },
+          // outgoingMessage.isHidden && { ...outgoingMessage },
+          // { text: outgoingMessage, user: { isHuman: true, name: 'Newcomer' } },
+          // { text: responseData.choices[0]?.message?.content, user: users.surferDude },
+        ]);
+        if (!outgoingMessage.isHidden) setMessages((messages) => [...messages, outgoingMessage]);
+        setMessages((messages) => [
+          ...messages,
           { text: responseData.choices[0]?.message?.content, user: users.surferDude },
         ]);
         setIsLoading(false);
@@ -75,15 +82,9 @@ export default function Home() {
         <Formik
           initialValues={{ message: '' }}
           onSubmit={(values, actions) => {
-            // todo
-            // setMessages([
-            //   ...messages,
-            //   { text: values.message, user: { isHuman: true, name: 'Newcomer' } },
-            // ]);
             actions.setSubmitting(false);
             actions.resetForm({ values: { message: '' } });
-            setOutgoingMessage(values.message);
-            // useChatGpt(values.message);
+            setOutgoingMessage({ text: values.message, user: { isHuman: true, name: 'Newcomer' } });
           }}
         >
           {(props) => (
