@@ -4,18 +4,23 @@ import styles from '@/styles/Home.module.css';
 import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { Flex, Spacer } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik } from 'formik';
 import { users } from '@/constants/users';
+import { useChatGpt } from '@/hooks/useChatGpt';
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      text: 'Hello! What is your name?',
-      user: users.surferDude,
-    },
-  ]);
+  const first = useChatGpt(
+    `You are surfer dude, who likes waves, beaches, beach life, hyper enthusiastic. Uses lots of emoticons. Your are part of an app called "Chat heads" where users can chat with you and similar bots. Please use your surfer persona to introduce the app in two sentences and ask the user for his name.`
+  )?.choices[0]?.message?.content;
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    if (first) setMessages([{ text: first, user: users.surferDude }]);
+    console.log(first);
+  }, [first]);
 
   return (
     <>
