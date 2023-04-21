@@ -1,7 +1,8 @@
 import useSWR from "swr";
 import { chatGptApiKey } from '../constants';
+import { ChatGptResponse } from '../interfaces/chatgpt-response.interface';
 
-export function useChatGpt(message: string) {
+export function useChatGpt(message: string): ChatGptResponse | null {
   const apiKey = chatGptApiKey;
   const apiUrl = "https://api.openai.com/v1/chat/completions";
 
@@ -18,14 +19,11 @@ export function useChatGpt(message: string) {
       }),
     });
   
-    const responseData = await response.json();
+    const responseData = (await response.json()) as ChatGptResponse;
     return responseData;
   };
 
   const { data, error, mutate } = useSWR("getChatGptMessage", fetcher);
 
-  if (error) return <div>Something went wrong!</div>;
-  if (!data) return <div>Loading...</div>;
-
-  return data;
+  return data ?? null;
 }
