@@ -38,8 +38,12 @@ export default function Home() {
           initialValues={{ message: '' }}
           onSubmit={(values, actions) => {
             // todo
-            console.log(values);
+            setMessages([
+              ...messages,
+              { text: values.message, user: { isHuman: true, name: 'New user' } },
+            ]);
             actions.setSubmitting(false);
+            actions.resetForm({ values: { message: '' } });
           }}
         >
           {(props) => (
@@ -48,7 +52,6 @@ export default function Home() {
                 {/* @ts-ignore */}
                 {({ field }) => (
                   <FormControl>
-                    {/* <FormLabel>First name</FormLabel> */}
                     <Input {...field} placeholder="Please enter message" />
                   </FormControl>
                 )}
