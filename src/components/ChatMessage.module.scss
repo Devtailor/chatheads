@@ -1,0 +1,23 @@
+.message {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.messageBubble {
+  background-color: gray;
+  padding: 0.5rem 1rem;
+  color: white;
+  border-radius: 1.5rem;
+}
+
+.human {
+  justify-content: end;
+
+  .messageBubble {
+    float: right;
+    background-color: #006aff;
+    width: fit-content;
+  }
+}

@@ -1,5 +1,6 @@
-import { Avatar } from '@chakra-ui/react';
-import Image from 'next/image';
+import { Avatar } from "@chakra-ui/react";
+import Image from "next/image";
+import styles from "./ChatMessage.module.scss";
 
 interface ChatMessageProps {
   message: Message;
@@ -7,14 +8,30 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   return (
-    <div>
-      <div>{message.user.name}</div>
-      {message.user.avatarUrl && <Avatar src={message.user.avatarUrl} size="md"></Avatar>}
-      {message.text && <div>{message.text}</div>}
-      {message.imageUrl && (
-        <Image src={message.imageUrl} width="200" height="200" alt="image"></Image>
+    <div className={`${styles.message} ${message.user.isHuman && styles.human}`}>
+      {message.user.avatarUrl && (
+        <Avatar src={message.user.avatarUrl} size="md"></Avatar>
       )}
-      {message.videoUrl && <video src={message.videoUrl} width="200" height="200" controls></video>}
+      <div>
+        <div>{message.user.name}</div>
+        {message.text && <div className={styles.messageBubble}>{message.text}</div>}
+        {message.imageUrl && (
+          <Image
+            src={message.imageUrl}
+            width="200"
+            height="200"
+            alt="image"
+          ></Image>
+        )}
+        {message.videoUrl && (
+          <video
+            src={message.videoUrl}
+            width="200"
+            height="200"
+            controls
+          ></video>
+        )}
+      </div>
     </div>
   );
 }
