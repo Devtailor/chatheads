@@ -19,7 +19,6 @@ export default function Home() {
 
   useEffect(() => {
     if (first) setMessages([{ text: first, user: users.surferDude }]);
-    console.log(first);
   }, [first]);
 
   return (
