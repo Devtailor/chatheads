@@ -17,6 +17,9 @@ export default function Home() {
     `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`
   )?.choices[0]?.message?.content;
 
+  // todo
+  const [outgoingMessage, setOutgoingMessage] = useState('');
+
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
