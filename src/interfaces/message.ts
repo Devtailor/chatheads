@@ -3,4 +3,5 @@ interface Message {
   text?: string;
   imageUrl?: string;
   videoUrl?: string;
+  isHidden?: boolean;
 }

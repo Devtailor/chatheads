@@ -10,24 +10,49 @@ import { Field, Form, Formik } from 'formik';
 import { users } from '@/constants/users';
 import { useChatGpt } from '@/hooks/useChatGpt';
 import Image from 'next/image';
+import { chatGptApiKey } from '@/constants';
+import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
 export default function Home() {
+  // const [isMessageHidden, setIsMessage] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const first = useChatGpt(
+  const [outgoingMessage, setOutgoingMessage] = useState(
     `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`
-  )?.choices[0]?.message?.content;
-
-  // todo
-  const [outgoingMessage, setOutgoingMessage] = useState('');
+  );
 
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    if (first) {
-      setMessages([{ text: first, user: users.surferDude }]);
-      setIsLoading(false);
+    const apiKey = chatGptApiKey;
+    const apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+    if (outgoingMessage) {
+      const fetchData = async () => {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: outgoingMessage }],
+          }),
+        });
+
+        const responseData = (await response.json()) as ChatGptResponse;
+
+        setMessages((messages) => [
+          ...messages,
+          { text: outgoingMessage, user: { isHuman: true, name: 'Newcomer' } },
+          { text: responseData.choices[0]?.message?.content, user: users.surferDude },
+        ]);
+        setIsLoading(false);
+      };
+
+      fetchData();
     }
-  }, [first]);
+  }, [outgoingMessage]);
 
   return (
     <>
@@ -51,12 +76,13 @@ export default function Home() {
           initialValues={{ message: '' }}
           onSubmit={(values, actions) => {
             // todo
-            setMessages([
-              ...messages,
-              { text: values.message, user: { isHuman: true, name: 'Newcomer' } },
-            ]);
+            // setMessages([
+            //   ...messages,
+            //   { text: values.message, user: { isHuman: true, name: 'Newcomer' } },
+            // ]);
             actions.setSubmitting(false);
             actions.resetForm({ values: { message: '' } });
+            setOutgoingMessage(values.message);
             // useChatGpt(values.message);
           }}
         >
