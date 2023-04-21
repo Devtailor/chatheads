@@ -7,23 +7,20 @@ import { Flex, Spacer } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik } from 'formik';
+import { users } from '@/constants/users';
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
     {
       text: 'Hello! What is your name?',
-      user: {
-        name: 'Surfer dude',
-        avatarUrl:
-          'https://scontent-arn2-1.xx.fbcdn.net/v/t1.6435-9/202693208_10157730135116854_1374965858457944794_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=CgEzKhxQCesAX8Rqbgr&_nc_ht=scontent-arn2-1.xx&oh=00_AfDKL1en548BMMdVkMjULmfT4i322mdrSSKocYWRdHAZZQ&oe=6469D2EB',
-      },
+      user: users.surferDude,
     },
   ]);
 
   return (
     <>
       <Head>
-        <title>Chatheads</title>
+        <title>Chat heads</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
