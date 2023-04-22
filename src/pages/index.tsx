@@ -18,6 +18,7 @@ export default function Home() {
   });
   const [messages, setMessages] = useState<Message[]>([]);
 
+  // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
     // TODO: Should be an env variable
     const apiKey = chatGptApiKey;
@@ -65,7 +66,7 @@ export default function Home() {
     setIsLoading(true);
     actions.resetForm({ values: { message: '' } });
 
-    // TODO: add user mesage immediately to the chat
+    // TODO: add user mesage immediately to the chat. Maybe merge outgoingMessage and messages?
     setOutgoingMessage({
       text: values.message,
       role: 'user',
