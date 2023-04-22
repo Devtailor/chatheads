@@ -7,7 +7,7 @@
 3. Add ChatGPT API key to `src/constants/env.ts` in the following format:
 
 ```ts
-export const chatGptApiKey = "sk-dummy-key";
+export const chatGptApiKey = 'sk-dummy-key';
 ```
 
 TODO: This should be in `.env` file in the future.
