@@ -7,6 +7,7 @@ export interface Message {
   imageUrl?: string;
   videoUrl?: string;
   isHidden?: boolean;
+  isChatGptIgnored?: boolean;
   // TODO: should be enum
   role?: string;
 }

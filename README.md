@@ -1,5 +1,7 @@
 # Chat heads
 
+**Disclaimer: The code is a very rough hackathon code, especially commited by Igor Krupenja on 22.04 😄**
+
 ## Getting Started
 
 1. Make sure node v18 is installed.
