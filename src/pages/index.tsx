@@ -1,9 +1,8 @@
 import Head from 'next/head';
-import { Inter } from 'next/font/google';
-import styles from '@/styles/Home.module.css';
-import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import styles from '@/styles/Home.module.scss';
+import { FormControl, Input } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { Flex, Spacer } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik } from 'formik';
@@ -25,41 +24,54 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div className={styles.chat}>
+        <header className={styles.header}></header>
+        <div className={`${styles.chat} ${styles.content}`}>
           {messages.map((message, i) => (
             <ChatMessage key={i} message={message}></ChatMessage>
           ))}
         </div>
-        <Formik
-          initialValues={{ message: '' }}
-          onSubmit={(values, actions) => {
-            // todo
-            setMessages([
-              ...messages,
-              { text: values.message, user: { isHuman: true, name: 'Newcomer' } },
-            ]);
-            actions.setSubmitting(false);
-            actions.resetForm({ values: { message: '' } });
-          }}
-        >
-          {(props) => (
-            <Form>
-              <Flex>
-                <Field name="message">
-                  {/* @ts-ignore */}
-                  {({ field }) => (
-                    <FormControl>
-                      <Input {...field} placeholder="Please enter message" />
-                    </FormControl>
-                  )}
-                </Field>
-                <Button mt={4} colorScheme="teal" isLoading={props.isSubmitting} type="submit">
-                  Send
-                </Button>
-              </Flex>
-            </Form>
-          )}
-        </Formik>
+
+        <div className={styles.footer}>
+          <Formik
+            initialValues={{ message: '' }}
+            onSubmit={(values, actions) => {
+              // todo
+              setMessages([
+                ...messages,
+                {
+                  text: values.message,
+                  user: { isHuman: true, name: 'Newcomer' },
+                },
+              ]);
+              actions.setSubmitting(false);
+              actions.resetForm({ values: { message: '' } });
+            }}
+          >
+            {(props) => (
+              <Form>
+                <Flex>
+                  <Field name="message">
+                    {/* @ts-ignore */}
+                    {({ field }) => (
+                      <FormControl mr={4} ml={4}>
+                        <Input mt={4} {...field} placeholder="Please enter message" />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Button
+                    mt={4}
+                    mr={4}
+                    className={styles.button}
+                    isLoading={props.isSubmitting}
+                    type="submit"
+                  >
+                    Send
+                  </Button>
+                </Flex>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </main>
     </>
   );
