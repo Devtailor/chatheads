@@ -56,6 +56,7 @@ export default function Home() {
       const responseData = (await response.json()) as ChatGptResponse;
       const message = responseData.choices[0].message.content;
       setTraits(tryParseJsonString(message));
+      console.log(traits);
       // traits = tryParseJsonString(message) as string[];
 
       setMessages((messages) => [
