@@ -1,0 +1,31 @@
+.button {
+  color: #006aff;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 6rem;
+}
+
+.chatHeader {
+  background-color: #1c1c1c;
+  color: white;
+  height: 60px;
+  width: 100%;
+}
+
+.content {
+  background-color: #f1f1f1;
+  overflow-y: auto;
+  padding: 1rem;
+  min-height: 500px;
+  max-height: 500px;
+}
+
+.footer {
+  background-color: #1c1c1c;
+  color: white;
+  height: 70px;
+  width: 100%;
+}

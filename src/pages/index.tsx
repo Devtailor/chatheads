@@ -1,14 +1,16 @@
 import Head from 'next/head';
-import styles from '@/styles/Home.module.css';
-import { FormControl, Input } from '@chakra-ui/react';
-import { Button } from '@chakra-ui/react';
-import { Flex } from '@chakra-ui/react';
+import styles from './index.module.scss';
+import { FormControl, Input, Button, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { users } from '@/constants/users';
 import Image from 'next/image';
-import { chatGptApiKey } from '@/constants';
+// todo rename file
+// todo style chat footer black
+// todo style dots
+// todo set messages
+import { chatGptApiKey } from '@/constants/constants';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
 export default function Home() {
@@ -65,7 +67,6 @@ export default function Home() {
     actions: FormikHelpers<{ message: string }>
   ) => {
     setIsLoading(true);
-    actions.setSubmitting(false);
     actions.resetForm({ values: { message: '' } });
 
     setOutgoingMessage({
@@ -84,7 +85,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.chat}>
+        <div className={styles.chatHeader}></div>
+
+        <div className={`${styles.chat} ${styles.content}`}>
           {messages.map((message, i) => (
             <ChatMessage key={i} message={message}></ChatMessage>
           ))}
@@ -107,17 +110,17 @@ export default function Home() {
                   {/* TODO: add type */}
                   {/* @ts-ignore */}
                   {({ field }) => (
-                    <FormControl>
-                      <Input {...field} placeholder="Please enter message" disabled={isLoading} />
+                    <FormControl mr={4} ml={4}>
+                      <Input mt={4} {...field} placeholder="Please enter message" />
                     </FormControl>
                   )}
                 </Field>
                 <Button
                   mt={4}
-                  colorScheme="teal"
+                  mr={4}
+                  className={styles.button}
                   isLoading={props.isSubmitting}
                   type="submit"
-                  isDisabled={isLoading}
                 >
                   Send
                 </Button>
