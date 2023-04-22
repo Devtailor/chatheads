@@ -10,12 +10,14 @@ import styles from './index.module.scss';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [outgoingMessage, setOutgoingMessage] = useState<Message | null>({
+  const firstMessage: Message = {
     text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
-  });
-  const [messages, setMessages] = useState<Message[]>([]);
+    role: 'user',
+  };
+  const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
+  const [messages, setMessages] = useState<Message[]>([firstMessage]);
 
   // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function Home() {
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
             messages: [
-              ...messages.map((m) => ({ role: m.role, content: m.text })),
+              ...[...messages].map((m) => ({ role: m.role, content: m.text })),
               { role: 'user', content: currentOutgoingMessage.text },
             ],
           }),
@@ -90,9 +92,11 @@ export default function Home() {
         <div className={styles.chatHeader}></div>
 
         <div className={styles.chat}>
-          {messages.map((message, i) => (
-            <ChatMessage key={i} message={message}></ChatMessage>
-          ))}
+          {messages
+            .filter((m) => !m.isHidden)
+            .map((message, i) => (
+              <ChatMessage key={i} message={message}></ChatMessage>
+            ))}
           {/* TODO: image dimensions not set properly */}
           {isLoading && <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>}
         </div>
