@@ -6,7 +6,6 @@ import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { users } from '@/constants/users';
 import Image from 'next/image';
-// todo set messages
 import { chatGptApiKey } from '@/constants/env';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
@@ -66,6 +65,7 @@ export default function Home() {
     setIsLoading(true);
     actions.resetForm({ values: { message: '' } });
 
+    // TODO: add user mesage immediately to the chat
     setOutgoingMessage({
       text: values.message,
       role: 'user',
