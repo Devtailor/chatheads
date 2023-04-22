@@ -25,6 +25,14 @@ export default function Home() {
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     if (outgoingMessage) {
+      // TODO: This is ugly, add proper fix. Maybe merge outgoingMessage and messages?
+      const currentOutgoingMessage = outgoingMessage;
+      setOutgoingMessage(null);
+      setMessages((messages) => [
+        ...messages,
+        ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
+      ]);
+
       const fetchData = async () => {
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -36,7 +44,7 @@ export default function Home() {
             model: 'gpt-3.5-turbo',
             messages: [
               ...messages.map((m) => ({ role: m.role, content: m.text })),
-              { role: 'user', content: outgoingMessage.text },
+              { role: 'user', content: currentOutgoingMessage.text },
             ],
           }),
         });
@@ -44,7 +52,6 @@ export default function Home() {
 
         setMessages((messages) => [
           ...messages,
-          ...(outgoingMessage.isHidden ? [] : [outgoingMessage]),
           {
             role: responseData.choices[0].message.role,
             text: responseData.choices[0].message.content,
@@ -52,7 +59,6 @@ export default function Home() {
           },
         ]);
         setIsLoading(false);
-        setOutgoingMessage(null);
       };
 
       fetchData();
@@ -66,7 +72,6 @@ export default function Home() {
     setIsLoading(true);
     actions.resetForm({ values: { message: '' } });
 
-    // TODO: add user mesage immediately to the chat. Maybe merge outgoingMessage and messages?
     setOutgoingMessage({
       text: values.message,
       role: 'user',
