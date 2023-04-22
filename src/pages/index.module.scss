@@ -1,3 +1,6 @@
+$bg-color: #f1f1f1;
+$border-color: #eae8e8;
+
 .main {
   display: flex;
   flex-direction: column;
@@ -5,24 +8,27 @@
   height: 100%;
 
   .chatHeader {
-    background-color: red;
-    color: white;
-    height: 60px;
     width: 100%;
+    background-color: $bg-color;
+    border-bottom: 1px solid $border-color;
+    height: 60px;
+    line-height: 60px;
+    color: #006aff;
+    font-size: 28px;
+    font-weight: 700;
+    padding-left: 15px;
   }
 
   .chat {
-    background-color: #f1f1f1;
+    background-color: $bg-color;
     overflow-y: auto;
     padding: 1rem;
-    //min-height: 500px;
-    //max-height: 500px;
     flex-grow: 1;
   }
 
   .form {
-    background-color: #f1f1f1;
-    border-top: 1px solid #eae8e8;
+    background-color: $bg-color;
+    border-top: 1px solid $border-color;
     color: white;
     height: 70px;
     width: 100%;

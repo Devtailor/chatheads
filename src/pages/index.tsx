@@ -188,7 +188,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.chatHeader}></div>
+        <div className={styles.chatHeader}>
+          ChatHeads
+        </div>
         <div className={styles.chat} ref={targetElementRef}>
           {messages
             .filter((message) => !message.isHidden)
