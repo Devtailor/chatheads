@@ -1,22 +1,23 @@
-import Head from 'next/head';
-import styles from './index.module.scss';
-import { FormControl, Input, Button, Flex } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { chatBots, chatGptApiKey } from '@/constants';
+import { ChatGptResponse, Message } from '@/interfaces';
+import { Button, Flex, FormControl, Input } from '@chakra-ui/react';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import Head from 'next/head';
 import Image from 'next/image';
-import { ChatGptResponse } from '@/interfaces/chat-gpt-response';
-import { Message } from '@/interfaces';
+import { useEffect, useState } from 'react';
+import styles from './index.module.scss';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [outgoingMessage, setOutgoingMessage] = useState<Message | null>({
+  const firstMessage: Message = {
     text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
-  });
-  const [messages, setMessages] = useState<Message[]>([]);
+    role: 'user',
+  };
+  const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
+  const [messages, setMessages] = useState<Message[]>([firstMessage]);
 
   // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
@@ -30,7 +31,8 @@ export default function Home() {
       setOutgoingMessage(null);
       setMessages((messages) => [
         ...messages,
-        ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
+        currentOutgoingMessage,
+        // ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
       ]);
 
       const fetchData = async () => {
@@ -90,12 +92,16 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.chatHeader}></div>
 
-        <div className={`${styles.chat} ${styles.content}`}>
-          {messages.map((message, i) => (
-            <ChatMessage key={i} message={message}></ChatMessage>
-          ))}
+        <div className={styles.chat}>
+          {messages
+            .filter((message) => !message.isHidden)
+            .map((message, i) => (
+              <ChatMessage key={i} message={message}></ChatMessage>
+            ))}
           {/* TODO: image dimensions not set properly */}
-          {isLoading && <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>}
+          {isLoading && (
+            <Image src="/dots.gif" height={10} width={30} alt="loading" priority></Image>
+          )}
         </div>
 
         <div className={styles.form}>
