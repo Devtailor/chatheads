@@ -1,6 +1,7 @@
 import { Avatar } from '@chakra-ui/react';
 import Image from 'next/image';
 import styles from './ChatMessage.module.scss';
+import { Message } from '@/interfaces';
 
 interface ChatMessageProps {
   message: Message;
