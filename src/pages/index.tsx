@@ -65,6 +65,7 @@ export default function Home() {
     setIsLoading(true);
     actions.setSubmitting(false);
     actions.resetForm({ values: { message: '' } });
+
     setOutgoingMessage({
       text: values.message,
       role: 'user',
