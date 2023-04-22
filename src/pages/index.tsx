@@ -48,8 +48,8 @@ export default function Home() {
           ...messages,
           ...(outgoingMessage.isHidden ? [] : [outgoingMessage]),
           {
-            role: responseData.choices[0]?.message?.role,
-            text: responseData.choices[0]?.message?.content,
+            role: responseData.choices[0].message.role,
+            text: responseData.choices[0].message.content,
             user: users.surferDude,
           },
         ]);
