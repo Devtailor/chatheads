@@ -22,7 +22,7 @@ export default function Home() {
   const apiKey = chatGptApiKey;
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
   // todo urgent - set  limit to 12
-  const introMessageLimit = 6;
+  const introMessageLimit = 12;
   const [isIntroReady, setIsIntroReady] = useState(false);
   const [isGirlBotReady, setIsGirlBotReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -98,12 +98,12 @@ export default function Home() {
           user: { isHuman: true, name: '' },
           isHidden: true,
         });
-        // todo urgent fix
       } else {
+        console.log('isgirl ready', isGirlBotReady);
         fetchData(currentOutgoingMessage);
       }
     }
-  }, [outgoingMessage, messages, isIntroReady, fetchData, traits]);
+  }, [outgoingMessage, messages, isIntroReady, fetchData, traits, isGirlBotReady]);
 
   useEffect(() => {
     if (traits.length && !isGirlBotReady) {
@@ -111,7 +111,10 @@ export default function Home() {
       setIsLoading(true);
       setIsGirlBotReady(true);
       setOutgoingMessage({
-        text: 'Please describe ideal partner match for that person. Please add ',
+        // todo urgent add girl prompt
+        text: `Please describe an ideal partner match for person with the following personality traits: ${traits.join(
+          ', '
+        )}'`,
         role: 'user',
         user: { isHuman: true, name: '' },
         isHidden: true,
