@@ -7,11 +7,13 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.scss';
+import { log } from 'console';
 
 function tryParseJsonString(str: string) {
   try {
     return JSON.parse(str);
   } catch (e) {
+    console.log('error parsing json', str);
     return '';
   }
 
@@ -22,7 +24,7 @@ export default function Home() {
   // TODO: Should be an env variable
   const apiKey = chatGptApiKey;
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
-  const introMessageLimit = 15;
+  const introMessageLimit = 3;
   const [isIntroReady, setIsIntroReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const firstMessage: Message = {
@@ -33,11 +35,12 @@ export default function Home() {
   };
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
-  // let traits: string[] = [];
   const [traits, setTraits] = useState<string[]>([]);
+  console.log('traits', traits);
 
   const fetchData = useCallback(
     async (currentOutgoingMessage: Message) => {
+      console.log('FETCHING DATA!');
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -55,9 +58,11 @@ export default function Home() {
       console.log(messages);
       const responseData = (await response.json()) as ChatGptResponse;
       const message = responseData.choices[0].message.content;
-      setTraits(tryParseJsonString(message));
-      console.log(traits);
-      // traits = tryParseJsonString(message) as string[];
+
+      setTraits(
+        tryParseJsonString(message.substring(message.indexOf('{'), message.lastIndexOf('}') + 1))
+          .personalTraits
+      );
 
       setMessages((messages) => [
         ...messages,
