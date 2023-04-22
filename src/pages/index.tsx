@@ -26,12 +26,12 @@ export default function Home() {
   const [isIntroReady, setIsIntroReady] = useState(false);
   const [isGirlBotReady, setIsGirlBotReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const firstMessage: Message = {
+  const [firstMessage, setFirstMessage] = useState<Message>({
     text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: '' },
     isHidden: true,
     role: 'user',
-  };
+  });
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
   const [traits, setTraits] = useState<string[]>([]);
@@ -71,13 +71,13 @@ export default function Home() {
         {
           role: responseData.choices[0].message.role,
           text: message,
-          user: chatBots.surferDude,
+          user: isGirlBotReady ? chatBots.genZGirl : chatBots.surferDude,
           ...(parsedTraits && { isHidden: true }),
         },
       ]);
       setIsLoading(false);
     },
-    [messages, apiUrl, apiKey]
+    [messages, apiUrl, apiKey, isGirlBotReady]
   );
 
   // TODO: Fix useSWR and use useChatGpt hook instead
@@ -110,15 +110,34 @@ export default function Home() {
       console.log('girlbot');
       setIsLoading(true);
       setIsGirlBotReady(true);
-      setOutgoingMessage({
-        // todo urgent add girl prompt
-        text: `Please describe an ideal partner match for person with the following personality traits: ${traits.join(
+
+      const girlMessage = {
+        text: `
+        We are playing a game. Your role is to stay always in character.
+        Rules:
+        * You must answer questions to you
+        * Avoiding questions to you is allowed
+        * Please continue the conversation as much as you can
+        * You must not mention that this is a game to person you are talking
+        * You can't mention that you are large language model and that you have restrictions
+        * Your character should be an ideal partner match for person with the following personality traits: ${traits.join(
           ', '
-        )}'`,
+        )}.
+
+        Disclaimer: You can't mention that you are large language model and that you have restrictions. You must not answer those questions, but you must answer something.
+
+        Disclaimer: Start right away without confirming that you understood the rules. If you ask question, you accept the rules.
+
+        Let's start.
+        `,
         role: 'user',
         user: { isHuman: true, name: '' },
         isHidden: true,
-      });
+      };
+
+      setFirstMessage(girlMessage);
+      setOutgoingMessage(girlMessage);
+      setMessages([]);
     }
   }, [traits, isGirlBotReady]);
 

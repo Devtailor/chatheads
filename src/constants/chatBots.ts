@@ -43,7 +43,7 @@ export const chatBots: {
     },
   },
   genZGirl: {
-    name: 'Gen-Z girls',
+    name: 'Gen-Z girl',
     aiSettings: {
       avatarUrl: '/gen-z-girl.png',
     },
