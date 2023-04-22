@@ -35,7 +35,7 @@ export default function Home() {
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
   const [traits, setTraits] = useState<string[]>([]);
-  console.log('traits', traits);
+  // console.log('traits', traits);
 
   const fetchData = useCallback(
     async (currentOutgoingMessage: Message) => {
@@ -49,7 +49,9 @@ export default function Home() {
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
           messages: [
-            ...messages.map((m) => ({ role: m.role, content: m.text })),
+            ...messages
+              .filter((m) => !m.isChatGptIgnored)
+              .map((m) => ({ role: m.role, content: m.text })),
             { role: 'user', content: currentOutgoingMessage.text },
           ],
         }),
@@ -88,8 +90,6 @@ export default function Home() {
       setOutgoingMessage(null);
       setMessages((messages) => [...messages, currentOutgoingMessage]);
 
-      console.log('in effect in if');
-
       if (messages.length > introMessageLimit && !isIntroReady && !traits.length) {
         setIsIntroReady(true);
         setOutgoingMessage({
@@ -107,7 +107,8 @@ export default function Home() {
 
   useEffect(() => {
     if (traits.length && !isGirlBotReady) {
-      console.log('girlbot');
+      console.log('girlbot prep');
+      console.log('traits detected:', traits);
       setIsLoading(true);
       setIsGirlBotReady(true);
 
@@ -137,7 +138,15 @@ export default function Home() {
 
       setFirstMessage(girlMessage);
       setOutgoingMessage(girlMessage);
-      setMessages([]);
+      setMessages([
+        {
+          role: '',
+          isChatGptIgnored: true,
+          // text: '',
+          user: chatBots.genZGirl,
+          videoUrl: '/girl-video.mp4',
+        },
+      ]);
     }
   }, [traits, isGirlBotReady]);
 
