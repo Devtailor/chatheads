@@ -90,8 +90,6 @@ export default function Home() {
       setOutgoingMessage(null);
       setMessages((messages) => [...messages, currentOutgoingMessage]);
 
-      console.log('in effect in if');
-
       if (messages.length > introMessageLimit && !isIntroReady && !traits.length) {
         setIsIntroReady(true);
         setOutgoingMessage({
@@ -109,7 +107,8 @@ export default function Home() {
 
   useEffect(() => {
     if (traits.length && !isGirlBotReady) {
-      console.log('girlbot');
+      console.log('girlbot prep');
+      console.log('traits detected:', traits);
       setIsLoading(true);
       setIsGirlBotReady(true);
 
