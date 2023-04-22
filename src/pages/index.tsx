@@ -4,7 +4,7 @@ import { FormControl, Input, Button, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
-import { users, chatGptApiKey } from '@/constants';
+import { chatBots, chatGptApiKey } from '@/constants';
 import Image from 'next/image';
 import { ChatGptResponse } from '@/interfaces/chat-gpt-response';
 import { Message } from '@/interfaces';
@@ -12,7 +12,7 @@ import { Message } from '@/interfaces';
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>({
-    text: `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`,
+    text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
   });
@@ -55,7 +55,7 @@ export default function Home() {
           {
             role: responseData.choices[0].message.role,
             text: responseData.choices[0].message.content,
-            user: users.surferDude,
+            user: chatBots.surferDude,
           },
         ]);
         setIsLoading(false);
