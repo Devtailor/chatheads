@@ -86,24 +86,17 @@ export default function Home() {
 
       if (messages.length > introMessageLimit && !isIntroReady) {
         setIsIntroReady(true);
+        setOutgoingMessage({
+          text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
+          role: 'user',
+          user: { isHuman: true, name: 'Newcomer' },
+          isHidden: true,
+        });
       } else {
         fetchData(currentOutgoingMessage);
       }
     }
   }, [outgoingMessage, messages, isIntroReady, fetchData]);
-
-  useEffect(() => {
-    if (isIntroReady) {
-      console.log('intro ready!!!!');
-
-      setOutgoingMessage({
-        text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
-        role: 'user',
-        user: { isHuman: true, name: 'Newcomer' },
-        isHidden: true,
-      });
-    }
-  }, [isIntroReady]);
 
   const handleSubmit = (
     values: { message: string },
