@@ -3,3 +3,17 @@
   padding: 0;
   margin: 0;
 }
+
+html, body, body > div, .main {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body > div {
+  min-height: 100%;
+}
+
+.chakra-portal {
+  display: none;
+}
