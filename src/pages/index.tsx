@@ -13,7 +13,7 @@ import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [outgoingMessage, setOutgoingMessage] = useState<Message>({
+  const [outgoingMessage, setOutgoingMessage] = useState<Message | null>({
     text: `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
@@ -52,11 +52,12 @@ export default function Home() {
           },
         ]);
         setIsLoading(false);
+        setOutgoingMessage(null);
       };
 
       fetchData();
     }
-  }, [outgoingMessage]);
+  }, [outgoingMessage, messages]);
 
   const handleSubmit = (
     values: { message: string },
