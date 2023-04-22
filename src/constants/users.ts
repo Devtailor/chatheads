@@ -1,3 +1,5 @@
+import { User } from '@/interfaces';
+
 export const users: { surferDude: User; professor: User; genZGirl: User } = {
   surferDude: {
     name: 'Surfer dude',
