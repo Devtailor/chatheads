@@ -5,7 +5,7 @@ import { Button } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { users } from '@/constants/users';
 import Image from 'next/image';
 import { chatGptApiKey } from '@/constants';
@@ -40,18 +40,11 @@ export default function Home() {
             ],
           }),
         });
-
         const responseData = (await response.json()) as ChatGptResponse;
 
         setMessages((messages) => [
           ...messages,
-          // outgoingMessage.isHidden && { ...outgoingMessage },
-          // { text: outgoingMessage, user: { isHuman: true, name: 'Newcomer' } },
-          // { text: responseData.choices[0]?.message?.content, user: users.surferDude },
-        ]);
-        if (!outgoingMessage.isHidden) setMessages((messages) => [...messages, outgoingMessage]);
-        setMessages((messages) => [
-          ...messages,
+          ...(outgoingMessage.isHidden ? [] : [outgoingMessage]),
           {
             role: responseData.choices[0]?.message?.role,
             text: responseData.choices[0]?.message?.content,
@@ -64,6 +57,20 @@ export default function Home() {
       fetchData();
     }
   }, [outgoingMessage]);
+
+  const handleSubmit = (
+    values: { message: string },
+    actions: FormikHelpers<{ message: string }>
+  ) => {
+    setIsLoading(true);
+    actions.setSubmitting(false);
+    actions.resetForm({ values: { message: '' } });
+    setOutgoingMessage({
+      text: values.message,
+      role: 'user',
+      user: { isHuman: true, name: 'Newcomer' },
+    });
+  };
 
   return (
     <>
@@ -79,22 +86,14 @@ export default function Home() {
           ))}
           {isLoading && (
             <div>
+              {/* TODO: dimensions not set properly */}
               <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>
             </div>
           )}
         </div>
         <Formik
           initialValues={{ message: '' }}
-          onSubmit={(values, actions) => {
-            setIsLoading(true);
-            actions.setSubmitting(false);
-            actions.resetForm({ values: { message: '' } });
-            setOutgoingMessage({
-              text: values.message,
-              role: 'user',
-              user: { isHuman: true, name: 'Newcomer' },
-            });
-          }}
+          onSubmit={(values, actions) => handleSubmit(values, actions)}
         >
           {(props) => (
             <Form>
