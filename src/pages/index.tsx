@@ -2,17 +2,17 @@ import Head from 'next/head';
 import styles from './index.module.scss';
 import { FormControl, Input, Button, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { ChatMessage } from '@/components/ChatMessage';
+import { ChatMessage } from '@/components';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
-import { users } from '@/constants/users';
+import { chatBots, chatGptApiKey } from '@/constants';
 import Image from 'next/image';
-import { chatGptApiKey } from '@/constants/env';
-import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
+import { ChatGptResponse } from '@/interfaces/chat-gpt-response';
+import { Message } from '@/interfaces';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>({
-    text: `${users.surferDude.aiSettings?.intro} ${users.surferDude.aiSettings?.namePrompt}`,
+    text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
   });
@@ -25,6 +25,14 @@ export default function Home() {
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     if (outgoingMessage) {
+      // TODO: This is ugly, add proper fix. Maybe merge outgoingMessage and messages?
+      const currentOutgoingMessage = outgoingMessage;
+      setOutgoingMessage(null);
+      setMessages((messages) => [
+        ...messages,
+        ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
+      ]);
+
       const fetchData = async () => {
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -36,7 +44,7 @@ export default function Home() {
             model: 'gpt-3.5-turbo',
             messages: [
               ...messages.map((m) => ({ role: m.role, content: m.text })),
-              { role: 'user', content: outgoingMessage.text },
+              { role: 'user', content: currentOutgoingMessage.text },
             ],
           }),
         });
@@ -44,15 +52,13 @@ export default function Home() {
 
         setMessages((messages) => [
           ...messages,
-          ...(outgoingMessage.isHidden ? [] : [outgoingMessage]),
           {
             role: responseData.choices[0].message.role,
             text: responseData.choices[0].message.content,
-            user: users.surferDude,
+            user: chatBots.surferDude,
           },
         ]);
         setIsLoading(false);
-        setOutgoingMessage(null);
       };
 
       fetchData();
@@ -66,7 +72,6 @@ export default function Home() {
     setIsLoading(true);
     actions.resetForm({ values: { message: '' } });
 
-    // TODO: add user mesage immediately to the chat. Maybe merge outgoingMessage and messages?
     setOutgoingMessage({
       text: values.message,
       role: 'user',

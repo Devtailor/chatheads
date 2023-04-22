@@ -1,5 +1,7 @@
-interface Message {
-  user: User;
+import { ChatParticipant } from './chat-participant';
+
+export interface Message {
+  user: ChatParticipant;
   text?: string;
   // TODO: unused
   imageUrl?: string;

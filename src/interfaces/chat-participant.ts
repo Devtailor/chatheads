@@ -1,4 +1,4 @@
-interface User {
+export interface ChatParticipant {
   name: string;
   isHuman?: boolean;
   aiSettings?: {

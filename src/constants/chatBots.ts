@@ -1,4 +1,10 @@
-export const users: { surferDude: User; professor: User; genZGirl: User } = {
+import { ChatParticipant } from '@/interfaces';
+
+export const chatBots: {
+  surferDude: ChatParticipant;
+  professor: ChatParticipant;
+  genZGirl: ChatParticipant;
+} = {
   surferDude: {
     name: 'Surfer dude',
     aiSettings: {
