@@ -5,10 +5,16 @@ import { Button, Flex, FormControl, Input } from '@chakra-ui/react';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.scss';
+import { log } from 'console';
 
 export default function Home() {
+  // TODO: Should be an env variable
+  const apiKey = chatGptApiKey;
+  const apiUrl = 'https://api.openai.com/v1/chat/completions';
+  const introMessageLimit = 3;
+  const [isIntroReady, setIsIntroReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const firstMessage: Message = {
     text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
@@ -19,53 +25,60 @@ export default function Home() {
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
 
+  const fetchData = useCallback(
+    async (currentOutgoingMessage: Message) => {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            ...messages.map((m) => ({ role: m.role, content: m.text })),
+            { role: 'user', content: currentOutgoingMessage.text },
+          ],
+        }),
+      });
+      console.log(messages);
+      const responseData = (await response.json()) as ChatGptResponse;
+
+      setMessages((messages) => [
+        ...messages,
+        {
+          role: responseData.choices[0].message.role,
+          text: responseData.choices[0].message.content,
+          user: chatBots.surferDude,
+        },
+      ]);
+      setIsLoading(false);
+    },
+    [messages, apiUrl, apiKey]
+  );
+
   // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
-    // TODO: Should be an env variable
-    const apiKey = chatGptApiKey;
-    const apiUrl = 'https://api.openai.com/v1/chat/completions';
-
     if (outgoingMessage) {
       // TODO: This is ugly, add proper fix. Maybe merge outgoingMessage and messages?
       const currentOutgoingMessage = outgoingMessage;
       setOutgoingMessage(null);
-      setMessages((messages) => [
-        ...messages,
-        currentOutgoingMessage,
-        // ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
-      ]);
+      setMessages((messages) => [...messages, currentOutgoingMessage]);
 
-      const fetchData = async () => {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [
-              ...messages.map((m) => ({ role: m.role, content: m.text })),
-              { role: 'user', content: currentOutgoingMessage.text },
-            ],
-          }),
-        });
-        const responseData = (await response.json()) as ChatGptResponse;
+      fetchData(currentOutgoingMessage);
 
-        setMessages((messages) => [
-          ...messages,
-          {
-            role: responseData.choices[0].message.role,
-            text: responseData.choices[0].message.content,
-            user: chatBots.surferDude,
-          },
-        ]);
-        setIsLoading(false);
-      };
-
-      fetchData();
+      if (messages.length > introMessageLimit && !isIntroReady) {
+        // setOutgoingMessage({
+        //   text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
+        //   role: 'user',
+        //   user: { isHuman: true, name: 'Newcomer' },
+        //   isHidden: true,
+        // });
+        setIsIntroReady(true);
+      }
+      console.log(isIntroReady);
     }
-  }, [outgoingMessage, messages]);
+  }, [outgoingMessage, messages, isIntroReady, fetchData]);
 
   const handleSubmit = (
     values: { message: string },
