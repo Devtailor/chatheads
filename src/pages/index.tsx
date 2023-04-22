@@ -8,11 +8,21 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 
+function tryParseJsonString(str: string) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    return '';
+  }
+
+  // return str;
+}
+
 export default function Home() {
   // TODO: Should be an env variable
   const apiKey = chatGptApiKey;
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
-  const introMessageLimit = 3;
+  const introMessageLimit = 15;
   const [isIntroReady, setIsIntroReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const firstMessage: Message = {
@@ -23,6 +33,8 @@ export default function Home() {
   };
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
+  // let traits: string[] = [];
+  const [traits, setTraits] = useState<string[]>([]);
 
   const fetchData = useCallback(
     async (currentOutgoingMessage: Message) => {
@@ -42,12 +54,15 @@ export default function Home() {
       });
       console.log(messages);
       const responseData = (await response.json()) as ChatGptResponse;
+      const message = responseData.choices[0].message.content;
+      setTraits(tryParseJsonString(message));
+      // traits = tryParseJsonString(message) as string[];
 
       setMessages((messages) => [
         ...messages,
         {
           role: responseData.choices[0].message.role,
-          text: responseData.choices[0].message.content,
+          text: message,
           user: chatBots.surferDude,
         },
       ]);
@@ -58,26 +73,35 @@ export default function Home() {
 
   // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
+    // console.log('fetch hook');
     if (outgoingMessage) {
+      // console.log('fetch hook IN REQUEST');
+
       // TODO: This is ugly, add proper fix. Maybe merge outgoingMessage and messages?
       const currentOutgoingMessage = outgoingMessage;
       setOutgoingMessage(null);
       setMessages((messages) => [...messages, currentOutgoingMessage]);
 
-      fetchData(currentOutgoingMessage);
-
       if (messages.length > introMessageLimit && !isIntroReady) {
-        // setOutgoingMessage({
-        //   text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
-        //   role: 'user',
-        //   user: { isHuman: true, name: 'Newcomer' },
-        //   isHidden: true,
-        // });
         setIsIntroReady(true);
+      } else {
+        fetchData(currentOutgoingMessage);
       }
-      console.log(isIntroReady);
     }
   }, [outgoingMessage, messages, isIntroReady, fetchData]);
+
+  useEffect(() => {
+    if (isIntroReady) {
+      console.log('intro ready!!!!');
+
+      setOutgoingMessage({
+        text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
+        role: 'user',
+        user: { isHuman: true, name: 'Newcomer' },
+        isHidden: true,
+      });
+    }
+  }, [isIntroReady]);
 
   const handleSubmit = (
     values: { message: string },
