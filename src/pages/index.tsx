@@ -7,7 +7,6 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.scss';
-import { log } from 'console';
 
 export default function Home() {
   // TODO: Should be an env variable
