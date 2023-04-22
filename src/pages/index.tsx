@@ -21,6 +21,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
+    // TODO: Should be an env variable
     const apiKey = chatGptApiKey;
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
