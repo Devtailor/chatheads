@@ -1,14 +1,12 @@
 import Head from 'next/head';
-import { Inter } from 'next/font/google';
 import styles from '@/styles/Home.module.css';
-import { FormControl, FormErrorMessage, FormLabel, Input } from '@chakra-ui/react';
+import { FormControl, Input } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
-import { Flex, Spacer } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import { Flex } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik } from 'formik';
 import { users } from '@/constants/users';
-import { useChatGpt } from '@/hooks/useChatGpt';
 import Image from 'next/image';
 import { chatGptApiKey } from '@/constants';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
@@ -37,7 +35,6 @@ export default function Home() {
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            // messages: [{ role: 'user', content: outgoingMessage.text }],
             messages: [
               ...messages.map((m) => ({ role: m.role, content: m.text })),
               { role: 'user', content: outgoingMessage.text },
@@ -104,6 +101,7 @@ export default function Home() {
             <Form>
               <Flex>
                 <Field name="message">
+                  {/* TODO: add type */}
                   {/* @ts-ignore */}
                   {({ field }) => (
                     <FormControl>
