@@ -4,4 +4,6 @@ interface Message {
   imageUrl?: string;
   videoUrl?: string;
   isHidden?: boolean;
+  // todo should be enum
+  role?: string;
 }

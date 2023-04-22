@@ -37,7 +37,11 @@ export default function Home() {
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: outgoingMessage.text }],
+            // messages: [{ role: 'user', content: outgoingMessage.text }],
+            messages: [
+              ...messages.map((m) => ({ role: m.role, content: m.text })),
+              { role: 'user', content: outgoingMessage.text },
+            ],
           }),
         });
 
@@ -52,7 +56,11 @@ export default function Home() {
         if (!outgoingMessage.isHidden) setMessages((messages) => [...messages, outgoingMessage]);
         setMessages((messages) => [
           ...messages,
-          { text: responseData.choices[0]?.message?.content, user: users.surferDude },
+          {
+            role: responseData.choices[0]?.message?.role,
+            text: responseData.choices[0]?.message?.content,
+            user: users.surferDude,
+          },
         ]);
         setIsLoading(false);
       };
@@ -82,9 +90,14 @@ export default function Home() {
         <Formik
           initialValues={{ message: '' }}
           onSubmit={(values, actions) => {
+            setIsLoading(true);
             actions.setSubmitting(false);
             actions.resetForm({ values: { message: '' } });
-            setOutgoingMessage({ text: values.message, user: { isHuman: true, name: 'Newcomer' } });
+            setOutgoingMessage({
+              text: values.message,
+              role: 'user',
+              user: { isHuman: true, name: 'Newcomer' },
+            });
           }}
         >
           {(props) => (
