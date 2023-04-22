@@ -31,7 +31,8 @@ export default function Home() {
       setOutgoingMessage(null);
       setMessages((messages) => [
         ...messages,
-        ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
+        currentOutgoingMessage,
+        // ...(currentOutgoingMessage.isHidden ? [] : [currentOutgoingMessage]),
       ]);
 
       const fetchData = async () => {
@@ -44,7 +45,7 @@ export default function Home() {
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
             messages: [
-              ...[...messages].map((m) => ({ role: m.role, content: m.text })),
+              ...messages.map((m) => ({ role: m.role, content: m.text })),
               { role: 'user', content: currentOutgoingMessage.text },
             ],
           }),
@@ -93,12 +94,14 @@ export default function Home() {
 
         <div className={styles.chat}>
           {messages
-            .filter((m) => !m.isHidden)
+            .filter((message) => !message.isHidden)
             .map((message, i) => (
               <ChatMessage key={i} message={message}></ChatMessage>
             ))}
           {/* TODO: image dimensions not set properly */}
-          {isLoading && <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>}
+          {isLoading && (
+            <Image src="/dots.gif" height={10} width={30} alt="loading" priority></Image>
+          )}
         </div>
 
         <div className={styles.form}>
