@@ -94,35 +94,37 @@ export default function Home() {
           {isLoading && <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>}
         </div>
 
-        <Formik
-          initialValues={{ message: '' }}
-          onSubmit={(values, actions) => handleSubmit(values, actions)}
-        >
-          {(props) => (
-            <Form>
-              <Flex>
-                <Field name="message">
-                  {/* TODO: add type */}
-                  {/* @ts-ignore */}
-                  {({ field }) => (
-                    <FormControl mr={4} ml={4}>
-                      <Input mt={4} {...field} placeholder="Please enter message" />
-                    </FormControl>
-                  )}
-                </Field>
-                <Button
-                  mt={4}
-                  mr={4}
-                  className={styles.button}
-                  isLoading={props.isSubmitting}
-                  type="submit"
-                >
-                  Send
-                </Button>
-              </Flex>
-            </Form>
-          )}
-        </Formik>
+        <div className={styles.form}>
+          <Formik
+            initialValues={{ message: '' }}
+            onSubmit={(values, actions) => handleSubmit(values, actions)}
+          >
+            {(props) => (
+              <Form>
+                <Flex>
+                  <Field name="message">
+                    {/* TODO: add type */}
+                    {/* @ts-ignore */}
+                    {({ field }) => (
+                      <FormControl mr={4} ml={4}>
+                        <Input mt={4} {...field} placeholder="Please enter message" />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Button
+                    mt={4}
+                    mr={4}
+                    className={styles.button}
+                    isLoading={props.isSubmitting}
+                    type="submit"
+                  >
+                    Send
+                  </Button>
+                </Flex>
+              </Form>
+            )}
+          </Formik>
+        </div>
       </main>
     </>
   );
