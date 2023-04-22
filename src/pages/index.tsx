@@ -15,14 +15,13 @@ function tryParseJsonString(str: string) {
     console.log('error parsing json', str);
     return '';
   }
-
-  // return str;
 }
 
 export default function Home() {
   // TODO: Should be an env variable
   const apiKey = chatGptApiKey;
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
+  // todo urgent - set  limit to 12
   const introMessageLimit = 3;
   const [isIntroReady, setIsIntroReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,10 +57,13 @@ export default function Home() {
       const responseData = (await response.json()) as ChatGptResponse;
       const message = responseData.choices[0].message.content;
 
-      setTraits(
-        tryParseJsonString(message.substring(message.indexOf('{'), message.lastIndexOf('}') + 1))
-          .personalTraits
-      );
+      const parsedTraits = tryParseJsonString(
+        message.substring(message.indexOf('{'), message.lastIndexOf('}') + 1)
+      ).personalTraits;
+
+      if (parsedTraits) {
+        setTraits(parsedTraits);
+      }
 
       setMessages((messages) => [
         ...messages,
@@ -69,6 +71,7 @@ export default function Home() {
           role: responseData.choices[0].message.role,
           text: message,
           user: chatBots.surferDude,
+          ...(parsedTraits && { isHidden: true }),
         },
       ]);
       setIsLoading(false);
