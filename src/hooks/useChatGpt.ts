@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { chatGptApiKey } from '../constants/constants';
+import { chatGptApiKey } from '../constants/env';
 import { ChatGptResponse } from '../interfaces/chatgpt-response.interface';
 
 export function useChatGpt(message: string): ChatGptResponse | null {

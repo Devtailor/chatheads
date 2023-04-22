@@ -6,10 +6,8 @@ import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { users } from '@/constants/users';
 import Image from 'next/image';
-// todo style chat footer black
 // todo set messages
-// todo rename file
-import { chatGptApiKey } from '@/constants/constants';
+import { chatGptApiKey } from '@/constants/env';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
 export default function Home() {
