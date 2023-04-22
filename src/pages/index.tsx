@@ -105,11 +105,17 @@ export default function Home() {
                   {/* @ts-ignore */}
                   {({ field }) => (
                     <FormControl>
-                      <Input {...field} placeholder="Please enter message" />
+                      <Input {...field} placeholder="Please enter message" disabled={isLoading} />
                     </FormControl>
                   )}
                 </Field>
-                <Button mt={4} colorScheme="teal" isLoading={props.isSubmitting} type="submit">
+                <Button
+                  mt={4}
+                  colorScheme="teal"
+                  isLoading={props.isSubmitting}
+                  type="submit"
+                  isDisabled={isLoading}
+                >
                   Send
                 </Button>
               </Flex>
