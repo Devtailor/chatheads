@@ -1,9 +1,10 @@
 interface Message {
   user: User;
   text?: string;
+  // TODO: unused
   imageUrl?: string;
   videoUrl?: string;
   isHidden?: boolean;
-  // todo should be enum
+  // TODO: should be enum
   role?: string;
 }

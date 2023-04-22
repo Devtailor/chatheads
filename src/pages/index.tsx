@@ -18,7 +18,6 @@ export default function Home() {
     user: { isHuman: true, name: 'Newcomer' },
     isHidden: true,
   });
-
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
