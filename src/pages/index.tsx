@@ -6,10 +6,9 @@ import { ChatMessage } from '@/components/ChatMessage';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { users } from '@/constants/users';
 import Image from 'next/image';
-// todo rename file
 // todo style chat footer black
-// todo style dots
 // todo set messages
+// todo rename file
 import { chatGptApiKey } from '@/constants/constants';
 import { ChatGptResponse } from '@/interfaces/chatgpt-response.interface';
 
@@ -91,12 +90,8 @@ export default function Home() {
           {messages.map((message, i) => (
             <ChatMessage key={i} message={message}></ChatMessage>
           ))}
-          {isLoading && (
-            <div>
-              {/* TODO: dimensions not set properly */}
-              <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>
-            </div>
-          )}
+          {/* TODO: image dimensions not set properly */}
+          {isLoading && <Image src="/dots.gif" height={10} width={30} alt="loading"></Image>}
         </div>
 
         <Formik
