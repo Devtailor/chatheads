@@ -35,7 +35,7 @@ export default function Home() {
   const [outgoingMessage, setOutgoingMessage] = useState<Message | null>(firstMessage);
   const [messages, setMessages] = useState<Message[]>([firstMessage]);
   const [traits, setTraits] = useState<string[]>([]);
-  console.log('traits', traits);
+  // console.log('traits', traits);
 
   const fetchData = useCallback(
     async (currentOutgoingMessage: Message) => {
@@ -49,7 +49,9 @@ export default function Home() {
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
           messages: [
-            ...messages.map((m) => ({ role: m.role, content: m.text })),
+            ...messages
+              .filter((m) => !m.isChatGptIgnored)
+              .map((m) => ({ role: m.role, content: m.text })),
             { role: 'user', content: currentOutgoingMessage.text },
           ],
         }),
@@ -137,7 +139,15 @@ export default function Home() {
 
       setFirstMessage(girlMessage);
       setOutgoingMessage(girlMessage);
-      setMessages([]);
+      setMessages([
+        {
+          role: '',
+          isChatGptIgnored: true,
+          // text: '',
+          user: chatBots.genZGirl,
+          videoUrl: '/girl-video.mp4',
+        },
+      ]);
     }
   }, [traits, isGirlBotReady]);
 

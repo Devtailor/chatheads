@@ -20,7 +20,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           <Image src={message.imageUrl} width="200" height="200" alt="image"></Image>
         )}
         {message.videoUrl && (
-          <video src={message.videoUrl} width="200" height="200" controls></video>
+          <video autoPlay src={message.videoUrl} width="200" height="200" controls></video>
         )}
       </div>
     </div>
