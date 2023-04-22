@@ -1,13 +1,12 @@
-import Head from 'next/head';
-import styles from './index.module.scss';
-import { FormControl, Input, Button, Flex } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { ChatMessage } from '@/components';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { chatBots, chatGptApiKey } from '@/constants';
+import { ChatGptResponse, Message } from '@/interfaces';
+import { Button, Flex, FormControl, Input } from '@chakra-ui/react';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import Head from 'next/head';
 import Image from 'next/image';
-import { ChatGptResponse } from '@/interfaces/chat-gpt-response';
-import { Message } from '@/interfaces';
+import { useEffect, useState } from 'react';
+import styles from './index.module.scss';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
