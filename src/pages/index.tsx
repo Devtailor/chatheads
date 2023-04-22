@@ -5,7 +5,7 @@ import { Button, Flex, FormControl, Input } from '@chakra-ui/react';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import styles from './index.module.scss';
 
 export default function Home() {
@@ -81,6 +81,21 @@ export default function Home() {
     });
   };
 
+  const targetElementRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    if (targetElementRef.current) {
+      targetElementRef.current.scrollTo({
+        top: targetElementRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages,isLoading]);
+
   return (
     <>
       <Head>
@@ -91,8 +106,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <div className={styles.chatHeader}></div>
-
-        <div className={styles.chat}>
+        <div className={styles.chat} ref={targetElementRef}>
           {messages
             .filter((message) => !message.isHidden)
             .map((message, i) => (
