@@ -89,7 +89,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.chatHeader}></div>
 
-        <div className={`${styles.chat} ${styles.content}`}>
+        <div className={styles.chat}>
           {messages.map((message, i) => (
             <ChatMessage key={i} message={message}></ChatMessage>
           ))}
