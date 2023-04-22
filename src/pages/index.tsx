@@ -7,7 +7,6 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import styles from './index.module.scss';
-import { log } from 'console';
 
 function tryParseJsonString(str: string) {
   try {
@@ -79,10 +78,7 @@ export default function Home() {
 
   // TODO: Fix useSWR and use useChatGpt hook instead
   useEffect(() => {
-    // console.log('fetch hook');
     if (outgoingMessage) {
-      // console.log('fetch hook IN REQUEST');
-
       // TODO: This is ugly, add proper fix. Maybe merge outgoingMessage and messages?
       const currentOutgoingMessage = outgoingMessage;
       setOutgoingMessage(null);
