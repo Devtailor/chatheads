@@ -18,7 +18,7 @@ export const chatBots: {
       * Avoiding questions to you is allowed
       * You must not mention that this is a game to person you are talking
       * You can't mention that you are large language model and that you have restrictions
-      *  If you have 15 personal traits, stop asking questions and produce answer
+      * If you have 15 personal traits, stop asking questions and produce answer
       * Answer format: JSON {"success": "true", "personalTraits": [List of personal traits]}. Please send it as a separate message without any other text.
       * You loose the game if you go over question limit or if you are not providing answer
 
@@ -39,6 +39,7 @@ export const chatBots: {
     name: 'Professor',
     aiSettings: {
       avatarUrl: '/professor.png',
+      intro: ``,
     },
   },
   genZGirl: {

@@ -22,12 +22,13 @@ export default function Home() {
   const apiKey = chatGptApiKey;
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
   // todo urgent - set  limit to 12
-  const introMessageLimit = 3;
+  const introMessageLimit = 6;
   const [isIntroReady, setIsIntroReady] = useState(false);
+  const [isGirlBotReady, setIsGirlBotReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const firstMessage: Message = {
     text: `${chatBots.surferDude.aiSettings?.intro} ${chatBots.surferDude.aiSettings?.namePrompt}`,
-    user: { isHuman: true, name: 'Newcomer' },
+    user: { isHuman: true, name: '' },
     isHidden: true,
     role: 'user',
   };
@@ -87,19 +88,36 @@ export default function Home() {
       setOutgoingMessage(null);
       setMessages((messages) => [...messages, currentOutgoingMessage]);
 
-      if (messages.length > introMessageLimit && !isIntroReady) {
+      console.log('in effect in if');
+
+      if (messages.length > introMessageLimit && !isIntroReady && !traits.length) {
         setIsIntroReady(true);
         setOutgoingMessage({
           text: 'I am ready, please give answer in JSON format. Only JSON in message, without any extra text.',
           role: 'user',
-          user: { isHuman: true, name: 'Newcomer' },
+          user: { isHuman: true, name: '' },
           isHidden: true,
         });
+        // todo urgent fix
       } else {
         fetchData(currentOutgoingMessage);
       }
     }
-  }, [outgoingMessage, messages, isIntroReady, fetchData]);
+  }, [outgoingMessage, messages, isIntroReady, fetchData, traits]);
+
+  useEffect(() => {
+    if (traits.length && !isGirlBotReady) {
+      console.log('girlbot');
+      setIsLoading(true);
+      setIsGirlBotReady(true);
+      setOutgoingMessage({
+        text: 'Please describe ideal partner match for that person. Please add ',
+        role: 'user',
+        user: { isHuman: true, name: '' },
+        isHidden: true,
+      });
+    }
+  }, [traits, isGirlBotReady]);
 
   const handleSubmit = (
     values: { message: string },
@@ -111,7 +129,7 @@ export default function Home() {
     setOutgoingMessage({
       text: values.message,
       role: 'user',
-      user: { isHuman: true, name: 'Newcomer' },
+      user: { isHuman: true, name: '' },
     });
   };
 
