@@ -1,5 +1,9 @@
 interface User {
   name: string;
-  avatarUrl?: string;
   isHuman?: boolean;
+  aiSettings?: {
+    avatarUrl: string;
+    intro?: string;
+    namePrompt?: string;
+  };
 }
